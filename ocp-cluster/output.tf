@@ -10,5 +10,5 @@ output sysdig_id {
 
 output cluster_id {
   description = "ID of OCP Cluster"
-  value       = "${ibm_resource_instance.cluster.id}"
+  value       = "${ibm_container_cluster.cluster.id}"
 }
