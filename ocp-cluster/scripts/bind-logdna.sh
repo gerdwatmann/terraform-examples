@@ -27,10 +27,16 @@ else
 fi
 
 echo "*** Creating Namespace"
-kubectl create namespace "${NAMESPACE}" 
+oc adm new-project --node-selector='' "${NAMESPACE}"
+
+echo "*** Create Service Account"
+oc create serviceaccount "${SERVICE_ACCOUNT_NAME}" -n "${NAMESPACE}"
+
+echo "*** Set privileged access"
+oc adm policy add-scc-to-user privileged system:serviceaccount:"${NAMESPACE}":"${SERVICE_ACCOUNT_NAME}"
 
 echo "*** Creating logdna-agent-key secret in ${NAMESPACE}"
-kubectl create secret generic logdna-agent-key -n "${NAMESPACE}" --from-literal=logdna-agent-key="${LOGDNA_AGENT_KEY}"
+oc create secret generic logdna-agent-key -n "${NAMESPACE}" --from-literal=logdna-agent-key="${LOGDNA_AGENT_KEY}"
 
 echo "*** Creating logdna-agent daemon set in ${NAMESPACE}"
-kubectl apply -n "${NAMESPACE}" -f "${LOGDNA_AGENT_DS_YAML}"
+oc apply -n "${NAMESPACE}" -f "${LOGDNA_AGENT_DS_YAML}"
