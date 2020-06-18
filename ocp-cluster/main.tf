@@ -1,9 +1,17 @@
+locals {
+  role              = "Manager"
+}
 
 data "ibm_resource_group" "resource_group" {
   name = "${var.resource_group}"
 }
 
-resource "ibm_resource_instance" "logdna" {
+
+##############################################################################
+# Creating LogDNA instance
+##############################################################################
+
+resource "ibm_resource_instance" "logdna_instance" {
   name              = "${var.unique_id}-logdna"
   service           = "logdna"
   plan              = "${var.logging_plan}"
@@ -13,6 +21,25 @@ resource "ibm_resource_instance" "logdna" {
     service-endpoints = "${var.end_points}"
   }
 }
+
+data "ibm_resource_instance" "logdna_instance" {
+  depends_on        = [ibm_resource_instance.logdna_instance]
+
+  name              = local.name
+  resource_group_id = "${data.ibm_resource_group.resource_group.id}"
+  location          = "${var.ibm_region}"
+  service           = "logdna"
+}
+
+resource "ibm_resource_key" "logdna_instance_key" {
+  name                 = "${data.ibm_resource_instance.logdna_instance.name}-key"
+  resource_instance_id = data.ibm_resource_instance.logdna_instance.id
+  role                 = local.role
+}
+
+##############################################################################
+# Creating Sysdig instance
+##############################################################################
 
 resource "ibm_resource_instance" "sysdig" {
   name              = "${var.unique_id}-sysdig"
@@ -33,4 +60,33 @@ resource "ibm_container_cluster" "cluster" {
   public_vlan_id    = "${var.public_vlan_id}"
   private_vlan_id   = "${var.private_vlan_id}"  
   entitlement       = "cloud_pak"
+}
+
+##############################################################################
+# Binding LogDNA to OCP Cluster
+##############################################################################
+
+resource "null_resource" "logdna_bind" {
+  triggers = {
+    namespace  = var.namespace
+    KUBECONFIG = var.cluster_config_file_path
+  }
+
+  provisioner "local-exec" {
+    command = "${path.module}/scripts/bind-logdna.sh ${var.cluster_type} ${ibm_resource_key.logdna_instance_key.credentials.ingestion_key} ${local.resource_location} ${var.namespace} ${var.service_account_name}"
+
+    environment = {
+      KUBECONFIG = self.triggers.KUBECONFIG
+      TMP_DIR    = "${path.cwd}/.tmp"
+    }
+  }
+
+  provisioner "local-exec" {
+    when    = destroy
+    command = "${path.module}/scripts/unbind-logdna.sh ${self.triggers.namespace}"
+
+    environment = {
+      KUBECONFIG = self.triggers.KUBECONFIG
+    }
+  }
 }

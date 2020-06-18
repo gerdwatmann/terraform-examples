@@ -32,6 +32,18 @@ variable "end_points" {
   default     = "public"
 }
 
+variable "namespace" {
+  type        = string
+  description = "The namespace where the agent should be deployed"
+  default     = "ibm-observe"
+}
+
+variable "service_account_name" {
+  type        = string
+  description = "The service account that the logdna agent should run under"
+  default     = "logdna-agent"
+}
+
 ##############################################################################
 # Sysdig Logging Variables
 ##############################################################################
