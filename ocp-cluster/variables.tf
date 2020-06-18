@@ -3,7 +3,7 @@ variable resource_group {
 }
 
 variable "ibmcloud_api_key" {
-  description = "IBM Cloud API Key with those permissions - https://cloud.ibm.com/docs/openshift?topic=openshift-access_reference#cluster_create_permissions"
+  description = "IBM Cloud API Key"
 }
 
 variable "machine_type" {
