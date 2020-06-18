@@ -1,4 +1,8 @@
-variable resource_group {
+##############################################################################
+# GeneralVariables
+##############################################################################
+
+variable "resource_group" {
   description = "Name of resource group to provision resources"
 }
 
@@ -6,9 +10,13 @@ variable "ibmcloud_api_key" {
   description = "IBM Cloud API Key"
 }
 
-variable unique_id {
+variable "unique_id" {
   description = "Prefix for all resources created in the module. Must begin with a letter."
   default     = "bootcamp"
+}
+
+variable "ibm_region" {
+  default = "eu-de"
 }
 
 ##############################################################################
@@ -19,7 +27,7 @@ variable "logging_plan" {
   default = "30 day"
 }
 
-variable end_points {
+variable "end_points" {
   description = "Sets the endpoints for the resources provisioned. Can be `public` or `private`"
   default     = "public"
 }
