@@ -41,7 +41,7 @@ resource "ibm_resource_key" "logdna_instance_key" {
 # Creating Sysdig instance
 ##############################################################################
 
-resource "ibm_resource_instance" "sysdig" {
+resource "ibm_resource_instance" "sysdig_instance" {
   name              = "${var.unique_id}-sysdig"
   service           = "sysdig-monitor"
   plan              = var.sysdig_plan
