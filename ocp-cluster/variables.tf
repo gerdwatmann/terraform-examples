@@ -7,7 +7,7 @@ variable "resource_group" {
 }
 
 variable "ibmcloud_api_key" {
-  description = "IBM Cloud API Key"
+  description = "IBM Cloud API Key. Got it working with user based api key that has to include an infra key!"
 }
 
 variable "unique_id" {
@@ -44,11 +44,10 @@ variable "service_account_name" {
   default     = "logdna-agent"
 }
 
-
-# variable "cluster_config_file_path" {
-#   type        = string
-#   description = "The path to the config file for the cluster"
-# }
+variable "cluster_config_file_path" {
+  type        = string
+  description = "The path to the config file for the cluster"
+}
 
 variable "cluster_type" {
   type        = string

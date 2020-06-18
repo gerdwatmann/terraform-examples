@@ -66,31 +66,45 @@ resource "ibm_container_cluster" "cluster" {
   #entitlement       = "cloud_pak"
 }
 
+data "ibm_container_cluster" "cluster" {
+  depends_on        = [ibm_container_cluster.cluster]
+
+  name              = "${var.unique_id}-cluster"
+  resource_group_id = "${data.ibm_resource_group.resource_group.id}"
+  datacenter        = "${var.datacenter}"
+}
+
+data "ibm_container_cluster_config" "clusterConfig" {
+  cluster_name_id = "${data.ibm_container_cluster.cluster.cluster_id}"
+  config_dir      = "/tmp"
+}
+
 ##############################################################################
 # Binding LogDNA to OCP Cluster
 ##############################################################################
 
-# resource "null_resource" "logdna_bind" {
-#   triggers = {
-#     namespace  = var.namespace
-#     KUBECONFIG = var.cluster_config_file_path
-#   }
+resource "null_resource" "logdna_bind" {
 
-#   provisioner "local-exec" {
-#     command = "${path.module}/scripts/bind-logdna.sh ${var.cluster_type} ${ibm_resource_key.logdna_instance_key.credentials.ingestion_key} ${var.ibm_region} ${var.namespace} ${var.service_account_name}"
+  triggers = {
+    namespace  = var.namespace
+    KUBECONFIG = "${data.ibm_container_cluster_config.clusterConfig.config_file_path}"
+  }
 
-#     environment = {
-#       KUBECONFIG = self.triggers.KUBECONFIG
-#       TMP_DIR    = "${path.cwd}/.tmp"
-#     }
-#   }
+  provisioner "local-exec" {
+    command = "${path.module}/scripts/bind-logdna.sh ${var.cluster_type} ${ibm_resource_key.logdna_instance_key.credentials.ingestion_key} ${var.ibm_region} ${var.namespace} ${var.service_account_name}"
 
-#   provisioner "local-exec" {
-#     when    = destroy
-#     command = "${path.module}/scripts/unbind-logdna.sh ${self.triggers.namespace}"
+    environment = {
+      KUBECONFIG = self.triggers.KUBECONFIG
+      TMP_DIR    = "${path.cwd}/.tmp"
+    }
+  }
 
-#     environment = {
-#       KUBECONFIG = self.triggers.KUBECONFIG
-#     }
-#   }
-# }
+  provisioner "local-exec" {
+    when    = destroy
+    command = "${path.module}/scripts/unbind-logdna.sh ${self.triggers.namespace}"
+
+    environment = {
+      KUBECONFIG = self.triggers.KUBECONFIG
+    }
+  }
+}
