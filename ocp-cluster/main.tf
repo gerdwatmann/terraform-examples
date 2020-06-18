@@ -68,11 +68,14 @@ resource "ibm_container_cluster" "cluster" {
 
 data "ibm_container_cluster" "cluster" {
   depends_on        = [ibm_container_cluster.cluster]
+  resource_group_id = "${data.ibm_resource_group.resource_group.id}"
   cluster_name_id = "${var.unique_id}-cluster"
 }
 
 data "ibm_container_cluster_config" "clusterConfig" {
+  resource_group_id = "${data.ibm_resource_group.resource_group.id}"
   cluster_name_id = "${var.unique_id}-cluster"
+  datacenter        = "${var.datacenter}"
   config_dir      = "/tmp"
 }
 
