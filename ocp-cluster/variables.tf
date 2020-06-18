@@ -45,10 +45,10 @@ variable "service_account_name" {
 }
 
 
-variable "cluster_config_file_path" {
-  type        = string
-  description = "The path to the config file for the cluster"
-}
+# variable "cluster_config_file_path" {
+#   type        = string
+#   description = "The path to the config file for the cluster"
+# }
 
 variable "cluster_type" {
   type        = string
