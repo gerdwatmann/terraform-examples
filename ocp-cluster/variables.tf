@@ -44,11 +44,6 @@ variable "service_account_name" {
   default     = "logdna-agent"
 }
 
-variable "cluster_config_file_path" {
-  type        = string
-  description = "The path to the config file for the cluster"
-}
-
 variable "cluster_type" {
   type        = string
   description = "The type of cluster that should be created (openshift or ocp3 or ocp4 or kubernetes)"
