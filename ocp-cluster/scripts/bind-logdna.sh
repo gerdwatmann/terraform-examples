@@ -31,7 +31,7 @@ echo "*** Creating Namespace"
 kubectl create namespace "${NAMESPACE}"
 
 echo "*** Create Service Account"
-kubectl create serviceaccount "${SERVICE_ACCOUNT_NAME}" -n "${NAMESPACE}"
+kubectl create serviceaccount "${SERVICE_ACCOUNT_NAME}"
 
 #echo "*** Set privileged access"
 #oc adm policy add-scc-to-user privileged system:serviceaccount:"${NAMESPACE}":"${SERVICE_ACCOUNT_NAME}"
