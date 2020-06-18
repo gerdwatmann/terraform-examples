@@ -96,7 +96,7 @@ variable "cluster_name" {
   default = "cluster"
 }
 variable kube_version {
-  default = "4.3_openshift"
+  default = "4.3.23_1525_openshift"
 }
 ##############################################################################
 
