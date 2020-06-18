@@ -24,7 +24,7 @@ variable "ibm_region" {
 ##############################################################################
 
 variable "logging_plan" {
-  default = "30 day"
+  default = "7-day"
 }
 
 variable "end_points" {
