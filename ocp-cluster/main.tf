@@ -25,7 +25,7 @@ resource "ibm_resource_instance" "logdna_instance" {
 data "ibm_resource_instance" "logdna_instance" {
   depends_on        = [ibm_resource_instance.logdna_instance]
 
-  name              = local.name
+  name              = "${var.unique_id}-logdna"
   resource_group_id = "${data.ibm_resource_group.resource_group.id}"
   location          = "${var.ibm_region}"
   service           = "logdna"
