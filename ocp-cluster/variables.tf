@@ -53,7 +53,7 @@ variable "cluster_config_file_path" {
 variable "cluster_type" {
   type        = string
   description = "The type of cluster that should be created (openshift or ocp3 or ocp4 or kubernetes)"
-  defult      = "ocp4"
+  default      = "ocp4"
 }
 
 
