@@ -26,6 +26,9 @@ else
     LOGDNA_AGENT_DS_YAML="https://assets.${REGION}.logging.cloud.ibm.com/clients/logdna-agent-ds-os.yaml"
 fi
 
+echo "*** Creating Namespace"
+kubectl create namespace "${NAMESPACE}" 
+
 echo "*** Creating logdna-agent-key secret in ${NAMESPACE}"
 kubectl create secret generic logdna-agent-key -n "${NAMESPACE}" --from-literal=logdna-agent-key="${LOGDNA_AGENT_KEY}"
 
