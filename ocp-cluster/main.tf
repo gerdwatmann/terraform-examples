@@ -8,7 +8,7 @@ data "ibm_resource_group" "resource_group" {
 
 
 ##############################################################################
-# Creating LogDNA instance
+# Creating LogDNA instance + ingestion key
 ##############################################################################
 
 resource "ibm_resource_instance" "logdna_instance" {
@@ -38,7 +38,7 @@ resource "ibm_resource_key" "logdna_instance_key" {
 }
 
 ##############################################################################
-# Creating Sysdig instance
+# Create Sysdig instance + ingestion key
 ##############################################################################
 
 resource "ibm_resource_instance" "sysdig_instance" {
@@ -47,6 +47,21 @@ resource "ibm_resource_instance" "sysdig_instance" {
   plan              = var.sysdig_plan
   location          = "${var.ibm_region}"
   resource_group_id = "${data.ibm_resource_group.resource_group.id}"
+}
+
+data "ibm_resource_instance" "sysdig_instance" {
+  depends_on        = [ibm_resource_instance.sysdig_instance]
+
+  name              = "${var.unique_id}-sysdig"
+  resource_group_id = "${data.ibm_resource_group.resource_group.id}"
+  location          = "${var.ibm_region}"
+  service           = "sysdig-monitor"
+}
+
+resource "ibm_resource_key" "sysdig_instance_key" {
+  name                 = "${data.ibm_resource_instance.sysdig_instance.name}-key"
+  resource_instance_id = data.ibm_resource_instance.sysdig_instance.id
+  role                 = local.role
 }
 
 ##############################################################################
