@@ -67,7 +67,7 @@ variable "sysdig_plan" {
 ##############################################################################
 
 variable "machine_type" {
-  default = "b2c.8x32"
+  default = "b3c.4x16"
 }
 
 variable "hardware" {
@@ -79,7 +79,7 @@ variable "datacenter" {
 }
 
 variable "default_pool_size" {
-  default = "3"
+  default = "5"
 }
 
 variable "private_vlan_id" {}
